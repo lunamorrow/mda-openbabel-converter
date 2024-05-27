@@ -43,7 +43,8 @@ doc = [
 # documentation = "https://mda_openbabel_converter.readthedocs.io"
 
 [tool.setuptools]
-py-modules = []
+packages = ["mda_openbabel_converter"]
+py-modules = ["__init__"]
 
 [tool.pytest.ini_options]
 minversion = "6.0"
