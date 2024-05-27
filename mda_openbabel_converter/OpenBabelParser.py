@@ -13,7 +13,7 @@ class OpenBabelParser():
     """
     def _format_hint(thing):
         """
-        Base func8on to check if the parser can actually parse this “thing” 
+        Base function to check if the parser can actually parse this “thing” 
         (i.e., is it a valid OpenBabel OBMol with no missing information, that 
         can be converted to a MDAnalysis Topology?)
         """

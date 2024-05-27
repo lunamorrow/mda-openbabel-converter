@@ -3,10 +3,10 @@ Documentation...
 """
 
 import MDAnalysis as mda
-from MDAnalysis import converters
-from MDAnalysis import coordinates
+from MDAnalysis.converters.base import ConverterBase
+from MDAnalysis.coordinates.base import SingleFrameReaderBase
 
-class OpenBabelReader(coordinates.base.SingleFrameReaderBase):
+class OpenBabelReader(SingleFrameReaderBase):
     """
     Convert an OpenBabel OBMol (from the file) to a MDAnalysis AtomGroup
     """
@@ -23,7 +23,7 @@ class OpenBabelReader(coordinates.base.SingleFrameReaderBase):
         """
         pass
 
-class OpenBabelConverter(converters.base.ConverterBase):
+class OpenBabelConverter(ConverterBase):
     """
     Convert a MDAnalysis AtomGroup to an OpenBabel OBMol
     """
