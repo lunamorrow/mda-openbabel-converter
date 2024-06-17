@@ -4,7 +4,7 @@ Documentation...
 
 import MDAnalysis as mda
 from MDAnalysis.converters.base import ConverterBase
-from MDAnalysis.coordinates.base import SingleFrameReaderBase
+from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysis.core.groups import AtomGroup
 
 try:
@@ -13,7 +13,7 @@ try:
 except ImportError:
     print("Cannot find openbabel, install with 'pip install openbabel==2.4.0'")
 
-class OpenBabelReader(SingleFrameReaderBase):
+class OpenBabelReader(MemoryReader):
     """
     Convert an OpenBabel OBMol (from the file) to a MDAnalysis AtomGroup
     """
@@ -34,39 +34,6 @@ class OpenBabelReader(SingleFrameReaderBase):
         """
         Converts file to OBMol to AtomGroup
         """
-        self.atoms = []
-        self.n_atoms = 0
-        self.residues = []
-        self.n_residues = 0
-        self.segments = []
-        self.n_segments = 0
-
-        obmol = filename
-
-        # Atoms
-        names = [] 
-        chiralities = []
-        resnums = []
-        resnames = []
-        elements = []
-        masses = []
-        charges = []
-        aromatics = []
-        ids = []
-        atomtypes = []
-        segids = []
-        altlocs = []
-        chainids = []
-        icodes = []
-        occupancies = []
-        tempfactors = []
-
-        for i in range(1, obmol):
-            atom = obmol.GetAtomById(i-1)
-            # need to add handling incase attributes are invalid or null in OBMol
-            names.append(atom.GetType()) #char
-
-
         pass
 
 class OpenBabelConverter(ConverterBase):
