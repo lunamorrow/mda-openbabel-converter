@@ -2,9 +2,8 @@
 
 import MDAnalysis as mda
 import openbabel as OB
-from openbabel import OBMol, OBConversion
-import pybel
-from pybel import readfile
+from openbabel import OBMol, OBConversion, pybel
+#from pybel import readfile
 
 import mda_openbabel_converter
 from mda_openbabel_converter import OpenBabelParser as OBParser
