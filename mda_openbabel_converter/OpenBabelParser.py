@@ -88,9 +88,9 @@ class OpenBabelParser(TopologyReaderBase):
             masses.append(atom.GetExactMass())  # double -> what about atom.GetAtomicMass()??; which is better?
             if not atom.GetExactMass().equals(atom.GetAtomicMass()):
                 warnings.warn(
-                    f"Exact mass and atomic mass of atom (ID: {atom.GetIdx})
-                    not equal. Be aware of isotopes, which are NOT supported
-                    by MDAnalysis.")
+                    f"Exact mass and atomic mass of atom (ID: {atom.GetIdx})"
+                    "not equal. Be aware of isotopes, which are NOT supported"
+                    "by MDAnalysis.")
             charges.append(atom.GetPartialCharge()) #int (or use atom.GetFormalCharge()?)
 
             # convert atomic number to element
@@ -99,8 +99,8 @@ class OpenBabelParser(TopologyReaderBase):
             resid = atom.GetResidue() # null if no residue
             if resid.equals(None):
                 warnings.warn(
-                    f"No residue is defined for atom (ID: {atom.GetIdx}). 
-                    Please set with 'SETTTING METHOD FOR OBMOL'" # TO DO
+                    f"No residue is defined for atom (ID: {atom.GetIdx})." 
+                    "Please set with 'SETTTING METHOD FOR OBMOL'" # TO DO
                 )
                 # if residue null, will need to assign w MDAnalysis...
             else:
