@@ -28,6 +28,7 @@ from MDAnalysis.core.topologyattrs import (
 )
 import warnings
 import numpy as np
+# import pdb
 HAS_OBABEL=False
 
 try:
@@ -42,7 +43,7 @@ except ImportError:
 class OpenBabelParser(TopologyReaderBase):
     """
     Inherits from TopologyReaderBase and converts an OpenBabel OBMol to a 
-    MDAnalysis Topology or adds it to a pre-existing Topology. This parser will 
+    MDAnalysis Topology or adds it to a pre-existing Topology. This parser 
     does not work in the reverse direction.
     """
 
@@ -75,8 +76,6 @@ class OpenBabelParser(TopologyReaderBase):
         self.segments = []
         self.n_segments = 0
 
-        obmol = self.filename
-
         # Atoms
         names = []
         chiralities = []
@@ -96,7 +95,7 @@ class OpenBabelParser(TopologyReaderBase):
         tempfactors = []  # B factor; not supported by OB
 
 
-        if obmol.GetFirstAtom().equals(None):
+        if (mol.Empty()):
             return Topology(n_atoms=0,
                             n_res=0,
                             n_seg=0,
@@ -104,13 +103,13 @@ class OpenBabelParser(TopologyReaderBase):
                             atom_resindex=None,
                             residue_segindex=None)
 
-        for atom in ob.OBMolAtomIter(obmol):
+        for atom in ob.OBMolAtomIter(mol):
             # need to add handling incase attributes are invalid or null in OBMol
             # names.append(atom.GetType()) #char -> nothing for name in OBMol? Is name required to make MDA Atom?
             atomtypes.append(atom.GetType())  # char
             ids.append(atom.GetIdx()) #int
             masses.append(atom.GetExactMass())  # double -> what about atom.GetAtomicMass()??; which is better?
-            if not atom.GetExactMass().equals(atom.GetAtomicMass()):
+            if not (atom.GetExactMass() == atom.GetAtomicMass()):
                 warnings.warn(
                     f"Exact mass and atomic mass of atom (ID: {atom.GetIdx})"
                     "not equal. Be aware of isotopes, which are NOT supported"
