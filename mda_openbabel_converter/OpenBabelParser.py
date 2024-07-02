@@ -181,7 +181,7 @@ class OpenBabelParser(TopologyReaderBase):
         bonds = []
         bond_types = []
         bond_orders = []
-        for bond_idx in range(1, mol.NumBonds()):
+        for bond_idx in range(0, mol.NumBonds()):
             bond = mol.GetBond(bond_idx)
             print(bond)
             bonds.append((bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()))
@@ -205,7 +205,6 @@ class OpenBabelParser(TopologyReaderBase):
                 "ester",
                 "carbonyl",
             ]
-
             for index, b_type in enumerate(OB_BOND_TYPES):
                 if b_type==True:
                     bond_types.append(MDA_BOND_TYPES[index])
