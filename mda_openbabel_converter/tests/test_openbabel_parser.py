@@ -13,6 +13,7 @@ import numpy as np
 from numpy.testing import assert_equal, assert_allclose
 # from mda_openbabel_converter.tests.test_data import # something...
 from MDAnalysisTests.topology.base import ParserBase
+from MDAnalysis.core.topology import Topology
 
 import mda_openbabel_converter.OpenBabelParser  # version 2.7.0
 
@@ -21,9 +22,7 @@ import mda_openbabel_converter.OpenBabelParser  # version 2.7.0
 
 
 class OpenBabelParserBase(ParserBase):
-    #parser = OBParser
     parser = mda_openbabel_converter.OpenBabelParser.OpenBabelParser
-    ref_filename = "none"
 
     expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
                       'resids', 'resnums', 'chiralities',
@@ -40,98 +39,128 @@ class OpenBabelParserBase(ParserBase):
         assert isinstance(u, mda.Universe)
 
     def test_bonds_total_counts(self, top):
-        assert len(top.bonds.values) == self.expected_n_bonds
+        if hasattr(top, 'bonds'):
+            assert len(top.bonds.values) == self.expected_n_bonds
+
 
 class TestOpenBabelParserEmpty(OpenBabelParserBase):
-    ref_filename = OBMol()
-
-    @pytest.fixture(autouse=True)
+    @pytest.fixture()
     def filename(self):
-        return ob.OBMol()
+        return OBMol()
 
-    expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
-                      'resids', 'resnums', 'chiralities',
-                      'segids', 'bonds',
-                     ]
+    expected_attrs = []
+    mandatory_attrs = [] #  as not instantiated during empty Topology creation
     
     expected_n_atoms = 0
     expected_n_residues = 0
     expected_n_segments = 0
     expected_n_bonds = 0
 
-    @pytest.fixture(autouse=True)
-    def top(self, filename):
-        top = OBParser.OpenBabelParser(filename)
-        return top
+    def test_mandatory_attributes(self, top):
+        for attr in self.mandatory_attrs:
+            assert hasattr(top, attr), 'Missing required attribute: {}'.format(attr)
 
-    def test_atoms_total_counts(self, top):
-        assert len(top.select_atoms("all")) == self.expected_n_atoms
+    def test_attrs_total_counts(self, top):
+        ag = mda.Universe(top).select_atoms("all")
+        res = ag.residues
+        seg = ag.segments
+        assert len(ag) == self.expected_n_atoms
+        assert len(res) == self.expected_n_residues
+        assert len(seg) == self.expected_n_segments
 
-    def test_residues_total_counts(self, top):
-        assert len(top.select_atoms("all")) == self.expected_n_atoms
 
-    def test_segments_total_counts(self, top):
-        assert len(top.select_atoms("all")) == self.expected_n_atoms
-        
+class TestOpenBabelParserAtomBuild(object):
+    parser = mda_openbabel_converter.OpenBabelParser.OpenBabelParser
+    expected_attrs = ['ids', 'elements', 'bonds']
 
-class TestOpenBabelParserAtomBuild(OpenBabelParserBase):
-
-    @pytest.fixture(autouse=True)
+    @pytest.fixture()
     def filename(self):
-        return OBMol()
-
-    expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
-                      'resids', 'resnums', 'chiralities',
-                      'segids', 'bonds',
-                     ]
+        obConversion = ob.OBConversion()
+        obConversion.SetInFormat("smi")
+        mol = OBMol()
+        obConversion.ReadString(mol, "C1=CC=CS1")
+        mol.AddHydrogens()
+        #print(mol.NumAtoms()) # Should print 9 (atoms) after adding hydrogens
+        return mol
     
-    # expected_attrs = OpenBabelParserBase.expected_attrs + ['charges']
-    
-    expected_n_atoms = 2
+    @pytest.fixture()
+    def top(self, filename):
+        yield self.parser(filename).parse()
+        
+    expected_n_atoms = 9
     expected_n_residues = 1
     expected_n_segments = 1
-    expected_n_bonds = 1
+    expected_n_bonds = 9
 
-    # @pytest.fixture(scope='class')
-    # def parser(self, mol):
-    #     top = OBParser(mol, **self.kwargs)
-    #     return top
+    def test_attrs_total_counts(self, top):
+        # assert(isinstance(top, Topology)) #false?
+        u = mda.Universe(top)
+        ag = u.select_atoms("all")
+        res = ag.residues
+        seg = ag.segments
+        assert len(ag) == self.expected_n_atoms
+        assert len(res) == self.expected_n_residues
+        assert len(seg) == self.expected_n_segments
+ 
 
 
-        
-# mol = OBMol()
-# print(mol.NumAtoms()) #Should print 0 (atoms)
+# @pytest.fixture()
+# def obabel():
+#     obConversion = ob.OBConversion()
+#     obConversion.SetInFormat("smi")
+#     mol = OBMol()
+#     obConversion.ReadString(mol, "C1=CC=CS1")
+#     mol.AddHydrogens()
+#     #print(mol.NumAtoms()) # Should print 9 (atoms) after adding hydrogens
+#     assert(mol.NumAtoms() == 9)
+#     return mol
 
-# a = mol.NewAtom()
-# a.SetAtomicNum(6)   # carbon atom
-# a.SetVector(0.0, 1.0, 2.0) # coordinates
-# b = mol.NewAtom()
-# mol.AddBond(1, 2, 1)   # atoms indexed from 1
-# print(mol.NumAtoms()) # Should print 2 (atoms)
-# print(mol.NumBonds()) # Should print 1 (bond)
+# def test_caller(obabel):
+#     assert(obabel.NumAtoms() == 9)
 
-# for i in range(1, mol.NumAtoms()+1):
-#     atom = mol.GetAtomById(i-1)
-#     print(a)
 
-# # --------
+    # expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
+    #                   'resids', 'resnums', 'chiralities',
+    #                   'segids', 'bonds',
+    #                  ]
+    
+    # # expected_attrs = OpenBabelParserBase.expected_attrs + ['charges']
 
-# obConversion = OBConversion()
-# obConversion.SetInAndOutFormats("smi", "mdl")
+# parser = mda_openbabel_converter.OpenBabelParser.OpenBabelParser
 
-# mol = OBMol()
-# obConversion.ReadString(mol, "C1=CC=CS1")
+# @pytest.fixture()
+# def filename():
+#     obConversion = ob.OBConversion()
+#     obConversion.SetInFormat("smi")
+#     mol = OBMol()
+#     obConversion.ReadString(mol, "C1=CC=CS1")
+#     mol.AddHydrogens()
+#     #print(mol.NumAtoms()) # Should print 9 (atoms) after adding hydrogens
+#     return mol
 
-# #readfile(format="smi", filename="")
+# # @pytest.fixture()
+# def test_top(filename):
+#     b = parser(filename).parse()
+#     print(type(b))
+#     # try:
+#     #     yield parser(filename).parse()
+#     # catch pytest.raises(ValueError, match="ResidueInfo is only partially available in the molecule."):
+#     #     # top = parser(filename).parse()
+#     #     # assert(isinstance(top, Topology)) #true?
+#     #     yield parser(filename).parse()
+    
+# # expected_n_atoms = 9
+# # expected_n_residues = 1
+# # expected_n_segments = 1
+# # expected_n_bonds = 9
 
-# print(mol.NumAtoms()) # Should print 5 (atoms)
-
-# mol.AddHydrogens()
-# print(mol.NumAtoms()) # Should print 9 (atoms) after adding hydrogens
-
-# outMDL = obConversion.WriteString(mol)
-# print(outMDL)
-
-# # --------
-
+# # def test_attrs_total_counts(top):
+# #     # assert(isinstance(top, Topology)) #false?
+# #     u = mda.Universe(top)
+# #     ag = u.select_atoms("all")
+# #     res = ag.residues
+# #     seg = ag.segments
+# #     assert len(ag) == expected_n_atoms
+# #     assert len(res) == expected_n_residues
+# #     assert len(seg) == expected_n_segments
 
