@@ -2,8 +2,9 @@
 
 import MDAnalysis as mda
 import openbabel as ob
-from openbabel import OBMol, OBConversion
+from openbabel import OBMol, OBConversion, OBElementTable
 from pybel import readfile
+#from openbabel.test.files import files
 
 import mda_openbabel_converter
 from mda_openbabel_converter import OpenBabelParser as OBParser
@@ -30,8 +31,8 @@ class OpenBabelParserBase(ParserBase):
                      ]
     
     expected_n_atoms = 0
-    expected_n_residues = 1
-    expected_n_segments = 1
+    expected_n_residues = 0
+    expected_n_segments = 0
     expected_n_bonds = 0
 
     def test_creates_universe(self, filename):
@@ -50,11 +51,6 @@ class TestOpenBabelParserEmpty(OpenBabelParserBase):
 
     expected_attrs = []
     mandatory_attrs = [] #  as not instantiated during empty Topology creation
-    
-    expected_n_atoms = 0
-    expected_n_residues = 0
-    expected_n_segments = 0
-    expected_n_bonds = 0
 
     def test_mandatory_attributes(self, top):
         for attr in self.mandatory_attrs:
@@ -69,7 +65,7 @@ class TestOpenBabelParserEmpty(OpenBabelParserBase):
         assert len(seg) == self.expected_n_segments
 
 
-class TestOpenBabelParserBasicFromSMILE(OpenBabelParserBase):
+class TestOpenBabelParserSMILES(OpenBabelParserBase):
     #parser = mda_openbabel_converter.OpenBabelParser.OpenBabelParser
     expected_attrs = OpenBabelParserBase.expected_attrs + ['charges']
 
@@ -105,5 +101,32 @@ class TestOpenBabelParserBasicFromSMILE(OpenBabelParserBase):
             atom.IsAromatic() for atom in ob.OBMolAtomIter(filename)])
         assert_equal(expected, top.aromaticities.values)
 
+    def test_elements(self, top, filename):
+        expected = np.array([
+            OBElementTable().GetSymbol(atom.GetAtomicNum()) for atom in ob.OBMolAtomIter(filename)])
+        assert_equal(expected, top.elements.values)
+
+    # def test_chiralities(self, top, filename):
+    #     chirality = None
+    #     if atom.IsPositiveStereo():
+    #         chirality = "+"
+    #     if atom.IsNegativeStereo():
+    #         chirality = "-"
+    #     chiralities.append(chirality)
+
+    #     expected = np.array([
+    #         OBElementTable().GetSymbol(atom.GetAtomicNum()) for atom in ob.OBMolAtomIter(filename)])
+    #     assert_equal(expected, top.chiralities.values)
+
+    def test_charges(self, top, filename):
+        expected = np.array([
+            atom.GetPartialCharge() for atom in ob.OBMolAtomIter(filename)])
+        assert_allclose(expected, top.charges.values)
+
+    # def test_mass_check(self, top, filename):
+    #     expected = np.array([
+    #         OBElementTable().GetSymbol(atom.GetAtomicNum()) for atom in ob.OBMolAtomIter(filename)])
+    #     assert_equal(expected, top.elements.values)
+
     # need to check other attrs including:
-    # 'ids', 'names', 'elements', 'masses', 'resids', 'resnums', 'chiralities', 'segids'
+    # 'ids', 'names', 'resids', 'resnums', 'chiralities', 'segids', 'charges'

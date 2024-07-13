@@ -31,6 +31,7 @@ import warnings
 import numpy as np
 import pdb #  for debugging
 HAS_OBABEL=False
+NEUTRON_MASS = 1.008
 
 try:
     import openbabel as ob
@@ -47,6 +48,7 @@ class OpenBabelParser(TopologyReaderBase):
     MDAnalysis Topology or adds it to a pre-existing Topology. This parser will 
     does not work in the reverse direction.
     """
+    format = 'OPENBABEL'
 
     @staticmethod
     def _format_hint(thing):
@@ -67,7 +69,6 @@ class OpenBabelParser(TopologyReaderBase):
         atom_residue index, residue_segment index and all of the atom's
         relevant attributes from the OBMol to initialise a new Topology.
         """
-        format = 'OPENBABEL'
         mol = self.filename
 
         self.atoms = []
@@ -109,11 +110,11 @@ class OpenBabelParser(TopologyReaderBase):
             atomtypes.append(atom.GetType())  # char
             ids.append(atom.GetIdx()) #int
             masses.append(atom.GetExactMass())  # double -> what about atom.GetAtomicMass()??; which is better?
-            if not (atom.GetExactMass() == atom.GetAtomicMass()):
+            if abs(atom.GetExactMass()-atom.GetAtomicMass()) >= NEUTRON_MASS:
                 warnings.warn(
-                    f"Exact mass and atomic mass of atom (ID: {atom.GetIdx})"
-                    "not equal. Be aware of isotopes, which are NOT supported"
-                    "by MDAnalysis.")
+                    f"Exact mass and atomic mass of atom ID: {atom.GetIdx()}"
+                    " are more than 1.008 AMU different. Be aware of isotopes," 
+                    " which are NOT supported by MDAnalysis.")
             charges.append(atom.GetPartialCharge()) #int (or use atom.GetFormalCharge()?)
 
             # convert atomic number to element
@@ -127,8 +128,8 @@ class OpenBabelParser(TopologyReaderBase):
                 icodes.append(resid.GetInsertionCode())
             else:
                 warnings.warn(
-                    f"No residue is defined for atom (ID: {atom.GetIdx})." 
-                    "Please set with 'MDA SETTING METHOD' if required." # TO DO
+                    f"No residue is defined for atom (ID: {atom.GetIdx()})." 
+                    " Please set with 'MDA SETTING METHOD' if required." # TO DO
                 )
                 resnums.append(None) # TO DO: is this best??
                 resnames.append(None)
