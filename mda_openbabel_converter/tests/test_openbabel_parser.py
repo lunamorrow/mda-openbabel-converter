@@ -106,27 +106,18 @@ class TestOpenBabelParserSMILES(OpenBabelParserBase):
             OBElementTable().GetSymbol(atom.GetAtomicNum()) for atom in ob.OBMolAtomIter(filename)])
         assert_equal(expected, top.elements.values)
 
-    # def test_chiralities(self, top, filename):
-    #     chirality = None
-    #     if atom.IsPositiveStereo():
-    #         chirality = "+"
-    #     if atom.IsNegativeStereo():
-    #         chirality = "-"
-    #     chiralities.append(chirality)
-
-    #     expected = np.array([
-    #         OBElementTable().GetSymbol(atom.GetAtomicNum()) for atom in ob.OBMolAtomIter(filename)])
-    #     assert_equal(expected, top.chiralities.values)
+    def test_chiralities(self, top, filename):
+        expected = np.array([
+            "+" if atom.IsPositiveStereo() else "-" if atom.IsNegativeStereo()
+            else "N" for atom in ob.OBMolAtomIter(filename)])
+        assert_equal(expected, top.chiralities.values)
 
     def test_charges(self, top, filename):
         expected = np.array([
             atom.GetPartialCharge() for atom in ob.OBMolAtomIter(filename)])
         assert_allclose(expected, top.charges.values)
 
-    # def test_mass_check(self, top, filename):
-    #     expected = np.array([
-    #         OBElementTable().GetSymbol(atom.GetAtomicNum()) for atom in ob.OBMolAtomIter(filename)])
-    #     assert_equal(expected, top.elements.values)
-
-    # need to check other attrs including:
-    # 'ids', 'names', 'resids', 'resnums', 'chiralities', 'segids', 'charges'
+    def test_mass_check(self, top, filename):
+        expected = np.array([
+            atom.GetExactMass() for atom in ob.OBMolAtomIter(filename)])
+        assert_allclose(expected, top.masses.values)

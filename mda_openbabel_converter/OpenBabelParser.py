@@ -33,6 +33,11 @@ import pdb #  for debugging
 HAS_OBABEL=False
 NEUTRON_MASS = 1.008
 
+from enum import StrEnum
+class StereoEnum(StrEnum):
+    positive = "+"
+    negative = "-"
+
 try:
     import openbabel as ob
     from openbabel import OBMol
@@ -45,7 +50,7 @@ except ImportError:
 class OpenBabelParser(TopologyReaderBase):
     """
     Inherits from TopologyReaderBase and converts an OpenBabel OBMol to a 
-    MDAnalysis Topology or adds it to a pre-existing Topology. This parser will 
+    MDAnalysis Topology or adds it to a pre-existing Topology. This parser 
     does not work in the reverse direction.
     """
     format = 'OPENBABEL'
@@ -71,13 +76,6 @@ class OpenBabelParser(TopologyReaderBase):
         """
         mol = self.filename
 
-        self.atoms = []
-        self.n_atoms = 0
-        self.residues = []
-        self.n_residues = 0
-        self.segments = []
-        self.n_segments = 0
-
         # Atoms
         names = []
         chiralities = []
@@ -90,11 +88,8 @@ class OpenBabelParser(TopologyReaderBase):
         ids = []
         atomtypes = []
         segids = []
-        altlocs = []
         chainids = []
         icodes = []
-        occupancies = []
-        tempfactors = []  # B factor; not supported by OB
 
         if mol.Empty():
             return Topology(n_atoms=0,
@@ -106,62 +101,41 @@ class OpenBabelParser(TopologyReaderBase):
 
         for atom in ob.OBMolAtomIter(mol):
             # need to add handling incase attributes are invalid or null in OBMol
-            # names.append(atom.GetType()) #char -> nothing for name in OBMol? Is name required to make MDA Atom?
-            atomtypes.append(atom.GetType())  # char
-            ids.append(atom.GetIdx()) #int
-            masses.append(atom.GetExactMass())  # double -> what about atom.GetAtomicMass()??; which is better?
+            atomtypes.append(atom.GetType())
+            ids.append(atom.GetIdx())
+            masses.append(atom.GetExactMass())
             if abs(atom.GetExactMass()-atom.GetAtomicMass()) >= NEUTRON_MASS:
                 warnings.warn(
                     f"Exact mass and atomic mass of atom ID: {atom.GetIdx()}"
                     " are more than 1.008 AMU different. Be aware of isotopes," 
-                    " which are NOT supported by MDAnalysis.")
-            charges.append(atom.GetPartialCharge()) #int (or use atom.GetFormalCharge()?)
+                    " which are NOT flagged by MDAnalysis.")
+            charges.append(atom.GetPartialCharge())
 
             # convert atomic number to element
-            elements.append(OBElementTable().GetSymbol(atom.GetAtomicNum())) #char
+            elements.append(OBElementTable().GetSymbol(atom.GetAtomicNum()))
 
+            # only for PBD and MOL2
             if atom.HasResidue():
-                resid = atom.GetResidue() # null if no residue
+                resid = atom.GetResidue()
                 resnums.append(resid.GetNum()) # TO DO: check if start at 0 or 1
                 resnames.append(resid.GetName())
-                chainids.append(resid.GetChainNum()) # is this correct???
+                chainids.append(resid.GetChain())
                 icodes.append(resid.GetInsertionCode())
-            else:
-                warnings.warn(
-                    f"No residue is defined for atom (ID: {atom.GetIdx()})." 
-                    " Please set with 'MDA SETTING METHOD' if required." # TO DO
-                )
-                resnums.append(None) # TO DO: is this best??
-                resnames.append(None)
-                chainids.append(None)
-                icodes.append(None)
-            
-                 
-            # don't need to check null case, as know assigned to OBMol we're currently parsing
-            # but, NEED TO HANDLE ADDING MULTIPLE SEGIDS/OBMOLS WHEN CONVERTING TO UNIVERSE AND ADDING TOGETHER... (should be ok, check w tests)
-            # segids.append(atom.GetParent())
-            segids.append(0) # need better system!
 
-            # TO DO: may need to create seperate for if SMILES input
             chirality = None
             if atom.IsPositiveStereo():
-                chirality = "+"
+                chirality = StereoEnum.positive
             if atom.IsNegativeStereo():
-                chirality = "-"
+                chirality = StereoEnum.negative
             chiralities.append(chirality)
 
-            aromatics.append(atom.IsAromatic()) #boolean
-
-            # altlocs.append()
-            # occupancies.append()
-            # tempfactors.append()
-
+            aromatics.append(atom.IsAromatic())
 
         # make Topology attributes
         attrs = []
         n_atoms = len(ids)
 
-        if resnums and (len(resnums) != n_atoms): #resnums.__contains__(None):
+        if resnums and resnums.__contains__(None): #(len(resnums) != n_atoms):
             raise ValueError(
                 "ResidueInfo is only partially available in the molecule."
             )
@@ -184,44 +158,18 @@ class OpenBabelParser(TopologyReaderBase):
         bond_orders = []
         for bond_idx in range(0, mol.NumBonds()):
             bond = mol.GetBond(bond_idx)
-            print(bond)
             bonds.append((bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()))
-            bond_orders.append(bond.GetBondOrder()) # is int, not double. Does this matter?
-
-            # make these a dict instead?
-            OB_BOND_TYPES = [
-            bond.IsAromatic(),
-            bond.IsAmide(),
-            bond.IsPrimaryAmide(),
-            bond.IsSecondaryAmide(),
-            bond.IsEster(),
-            bond.IsCarbonyl(),
-            ]
-
-            MDA_BOND_TYPES = [
-                "aromatic",
-                "amide",
-                "primary amide",
-                "secondary amide",
-                "ester",
-                "carbonyl",
-            ]
-            for index, b_type in enumerate(OB_BOND_TYPES):
-                if b_type==True:
-                    bond_types.append(MDA_BOND_TYPES[index])
-
+            bond_orders.append(float(bond.GetBondOrder()))
+            bond_types.append(float(bond.GetBondOrder()))
         attrs.append(Bonds(bonds, types=bond_types, order=bond_orders))
 
         # * Optional attributes *
 
-        # Atom name
-        if names:
-            attrs.append(Atomnames(np.array(names, dtype=object)))
-        else:
-            for atom in ob.OBMolAtomIter(mol):
-                name = "%s%d" % (OBElementTable().GetSymbol(atom.GetAtomicNum()), atom.GetIdx())
-                names.append(name)
-            attrs.append(Atomnames(np.array(names, dtype=object)))
+        # Atom name set with element and id, as name not supported by OpenBabel
+        for atom in ob.OBMolAtomIter(mol):
+            name = "%s%d" % (OBElementTable().GetSymbol(atom.GetAtomicNum()), atom.GetIdx())
+            names.append(name)
+        attrs.append(Atomnames(np.array(names, dtype=object)))
 
         # Atom type
         if atomtypes:
@@ -234,17 +182,7 @@ class OpenBabelParser(TopologyReaderBase):
         if charges:
             attrs.append(Charges(np.array(charges, dtype=np.float32)))
         else:
-            pass # no guesser yet
-
-        # # PDB only
-        # for vals, Attr, dtype in (
-        #     (altlocs, AltLocs, object),
-        #     (chainids, ChainIDs, object),
-        #     (occupancies, Occupancies, np.float32),
-        #     (tempfactors, Tempfactors, np.float32),
-        # ):
-        #     if vals:
-        #         attrs.append(Attr(np.array(vals, dtype=dtype)))
+            pass  # no guesser yet
 
         # Residue
         if any(resnums) and not any(val is None for val in resnums):

@@ -8,7 +8,6 @@ Global pytest fixtures
 # https://docs.pytest.org/en/stable/how-to/fixtures.html#scope-sharing-fixtures-across-classes-modules-packages-or-session
 
 import pytest
-# import MDAnalysis
 from mda_openbabel_converter.data.files import MDANALYSIS_LOGO
 
 
