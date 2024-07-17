@@ -4,7 +4,7 @@ import MDAnalysis as mda
 import openbabel as ob
 from openbabel import OBMol, OBConversion, OBElementTable
 from pybel import readfile
-#from openbabel.test.files import files
+# from openbabel.test.files import files
 
 import mda_openbabel_converter
 from mda_openbabel_converter import OpenBabelParser as OBParser
@@ -12,7 +12,6 @@ import pytest  # version 8.2.2
 import sys
 import numpy as np
 from numpy.testing import assert_equal, assert_allclose
-# from mda_openbabel_converter.tests.test_data import # something...
 from MDAnalysisTests.topology.base import ParserBase
 from MDAnalysis.core.topology import Topology
 
@@ -28,8 +27,8 @@ class OpenBabelParserBase(ParserBase):
     expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
                       'resids', 'resnums', 'chiralities',
                       'segids', 'bonds',
-                     ]
-    
+                    ]
+
     expected_n_atoms = 0
     expected_n_residues = 0
     expected_n_segments = 0
@@ -50,11 +49,12 @@ class TestOpenBabelParserEmpty(OpenBabelParserBase):
         return OBMol()
 
     expected_attrs = []
-    mandatory_attrs = [] #  as not instantiated during empty Topology creation
+    mandatory_attrs = []  # as not instantiated during empty Topology creation
 
     def test_mandatory_attributes(self, top):
         for attr in self.mandatory_attrs:
-            assert hasattr(top, attr), 'Missing required attribute: {}'.format(attr)
+            assert (hasattr(top, attr), 
+                    'Missing required attribute: {}'.format(attr))
 
     def test_attrs_total_counts(self, top):
         ag = mda.Universe(top).select_atoms("all")
@@ -66,7 +66,6 @@ class TestOpenBabelParserEmpty(OpenBabelParserBase):
 
 
 class TestOpenBabelParserSMILES(OpenBabelParserBase):
-    #parser = mda_openbabel_converter.OpenBabelParser.OpenBabelParser
     expected_attrs = OpenBabelParserBase.expected_attrs + ['charges']
 
     @pytest.fixture()
@@ -77,11 +76,11 @@ class TestOpenBabelParserSMILES(OpenBabelParserBase):
         obConversion.ReadString(mol, "C1=CC=CS1")
         mol.AddHydrogens()
         return mol
-    
+
     @pytest.fixture()
     def top(self, filename):
         yield self.parser(filename).parse()
-        
+
     expected_n_atoms = 9
     expected_n_residues = 1
     expected_n_segments = 1
@@ -103,7 +102,8 @@ class TestOpenBabelParserSMILES(OpenBabelParserBase):
 
     def test_elements(self, top, filename):
         expected = np.array([
-            OBElementTable().GetSymbol(atom.GetAtomicNum()) for atom in ob.OBMolAtomIter(filename)])
+            OBElementTable().GetSymbol(atom.GetAtomicNum()) for atom in 
+            ob.OBMolAtomIter(filename)])
         assert_equal(expected, top.elements.values)
 
     def test_chiralities(self, top, filename):

@@ -29,28 +29,30 @@ from MDAnalysis.core.topologyattrs import (
 )
 import warnings
 import numpy as np
-import pdb #  for debugging
-HAS_OBABEL=False
-NEUTRON_MASS = 1.008
-
 from enum import StrEnum
-class StereoEnum(StrEnum):
-    positive = "+"
-    negative = "-"
+
+HAS_OBABEL = False
+NEUTRON_MASS = 1.008
 
 try:
     import openbabel as ob
     from openbabel import OBMol
     from openbabel import OBElementTable
-    HAS_OBABEL=True
+    HAS_OBABEL = True
 except ImportError:
     warnings.warn("Cannot find openbabel, install with `mamba install -c "
                   "conda-forge openbabel`")
 
+
+class StereoEnum(StrEnum):
+    positive = "+"
+    negative = "-"
+
+
 class OpenBabelParser(TopologyReaderBase):
     """
-    Inherits from TopologyReaderBase and converts an OpenBabel OBMol to a 
-    MDAnalysis Topology or adds it to a pre-existing Topology. This parser 
+    Inherits from TopologyReaderBase and converts an OpenBabel OBMol to a
+    MDAnalysis Topology or adds it to a pre-existing Topology. This parser
     does not work in the reverse direction.
     """
     format = 'OPENBABEL'
@@ -62,7 +64,7 @@ class OpenBabelParser(TopologyReaderBase):
         (i.e., is it a valid OpenBabel OBMol that can be converted to a
         MDAnalysis Topology?)
         """
-        if HAS_OBABEL == False:
+        if HAS_OBABEL is False:
             return False
         else:
             return isinstance(thing, ob.OBMol)
@@ -100,14 +102,13 @@ class OpenBabelParser(TopologyReaderBase):
                             residue_segindex=None)
 
         for atom in ob.OBMolAtomIter(mol):
-            # need to add handling incase attributes are invalid or null in OBMol
             atomtypes.append(atom.GetType())
             ids.append(atom.GetIdx())
             masses.append(atom.GetExactMass())
             if abs(atom.GetExactMass()-atom.GetAtomicMass()) >= NEUTRON_MASS:
                 warnings.warn(
                     f"Exact mass and atomic mass of atom ID: {atom.GetIdx()}"
-                    " are more than 1.008 AMU different. Be aware of isotopes," 
+                    " are more than 1.008 AMU different. Be aware of isotopes,"
                     " which are NOT flagged by MDAnalysis.")
             charges.append(atom.GetPartialCharge())
 
@@ -117,7 +118,7 @@ class OpenBabelParser(TopologyReaderBase):
             # only for PBD and MOL2
             if atom.HasResidue():
                 resid = atom.GetResidue()
-                resnums.append(resid.GetNum()) # TO DO: check if start at 0 or 1
+                resnums.append(resid.GetNum())
                 resnames.append(resid.GetName())
                 chainids.append(resid.GetChain())
                 icodes.append(resid.GetInsertionCode())
@@ -135,7 +136,7 @@ class OpenBabelParser(TopologyReaderBase):
         attrs = []
         n_atoms = len(ids)
 
-        if resnums and resnums.__contains__(None): #(len(resnums) != n_atoms):
+        if resnums and resnums.__contains__(None):
             raise ValueError(
                 "ResidueInfo is only partially available in the molecule."
             )
@@ -167,7 +168,8 @@ class OpenBabelParser(TopologyReaderBase):
 
         # Atom name set with element and id, as name not supported by OpenBabel
         for atom in ob.OBMolAtomIter(mol):
-            name = "%s%d" % (OBElementTable().GetSymbol(atom.GetAtomicNum()), atom.GetIdx())
+            name = "%s%d" % (OBElementTable().GetSymbol(atom.GetAtomicNum()), 
+                             atom.GetIdx())
             names.append(name)
         attrs.append(Atomnames(np.array(names, dtype=object)))
 
