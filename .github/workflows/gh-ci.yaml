@@ -76,7 +76,8 @@ jobs:
     - name: Install package
       run: |
         python --version
-        mamba install -c conda-forge .  --no-deps
+        mamba install -c conda-forge openbabel
+        python -m pip install .  --no-deps 
 
     - name: Python information
       run: |
