@@ -12,5 +12,8 @@ __all__ = [
     "MDANALYSIS_LOGO",  # example file of MDAnalysis logo
 ]
 
-import importlib.resources
-MDANALYSIS_LOGO = importlib.resources.files(__name__) / "mda.txt"
+from importlib.resources import files
+#from . import data
+# MDANALYSIS_LOGO = importlib.resources.files(__name__) / "mda.txt"
+MDANALYSIS_LOGO = files("mda_openbabel_converter") / "data" / "mda.txt"
+
