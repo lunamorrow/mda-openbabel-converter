@@ -76,7 +76,7 @@ jobs:
     - name: Install package
       run: |
         python --version
-        python -m pip install .  --no-deps
+        mamba install -c conda-forge .  --no-deps
 
     - name: Python information
       run: |
