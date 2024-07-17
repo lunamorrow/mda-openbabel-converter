@@ -12,6 +12,5 @@ __all__ = [
     "MDANALYSIS_LOGO",  # example file of MDAnalysis logo
 ]
 
-from pkg_resources import resource_filename
-
-MDANALYSIS_LOGO = resource_filename(__name__, "mda.txt")
+import importlib.resources
+MDANALYSIS_LOGO = importlib.resources.files(__name__) / "mda.txt"
