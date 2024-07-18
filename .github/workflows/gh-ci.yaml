@@ -103,7 +103,8 @@ jobs:
 
 
   pylint_check:
-    if: "github.repository == 'MDAnalysis/mda_openbabel_converter'"
+    if: "github.repository == 'lunamorrow/mda_openbabel_converter'"
+    needs: environment-config
     runs-on: ubuntu-latest
 
     steps:
