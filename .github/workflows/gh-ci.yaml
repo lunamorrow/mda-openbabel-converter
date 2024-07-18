@@ -75,7 +75,6 @@ jobs:
 
     - name: Install package
       run: |
-        mamba install -c conda-forge openbabel<3.0.0
         python --version
         python -m pip install .  --no-deps 
 
@@ -142,7 +141,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        pip install pipx twine
+        pip install pipx twine openbabel<3.0.0
 
     - name: Build package
       run: |
