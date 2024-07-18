@@ -64,7 +64,11 @@ jobs:
         install-tests: false
         installer:  mamba 
         shell: bash  -l {0} 
-      
+
+    - name: Install openbabel
+      run: |
+        mamba install -c conda-forge openbabel<3.0.0
+
     - name: Install package
       run: |
         python --version
@@ -86,8 +90,8 @@ jobs:
         pytest -n auto -v --cov=mda_openbabel_converter --cov-report=xml --color=yes mda_openbabel_converter/tests/
 
     - name: codecov
-      if: github.repository == 'lunamorrow/mda_openbabel_converter' && github.event_name != 'schedule'
-      uses: codecov/codecov-action@v4
+      if: github.repository == 'MDAnalysis/mda_openbabel_converter' && github.event_name != 'schedule'
+      uses: codecov/codecov-action@v3
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
         file: coverage.xml
@@ -96,7 +100,8 @@ jobs:
 
 
   pylint_check:
-    if: "github.repository == 'MDAnalysis/mda-openbabel-converter'"
+    if: "github.repository == 'MDAnalysis/mda_openbabel_converter'"
+    needs: environment-config
     runs-on: ubuntu-latest
 
     steps:
