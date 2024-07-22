@@ -23,30 +23,14 @@ defaults:
     shell: bash  -l {0} 
 
 jobs:
-  environment-config:
-    runs-on: ubuntu-latest
-    outputs:
-      stable-python-version: ${{ steps.get-compatible-python.outputs.stable-python }}
-      python-matrix: ${{ steps.get-compatible-python.outputs.python-versions }}
-    steps:
-      - uses: actions/setup-python@v4
-        with:
-          python-version: "3.11"
-
-      - id: get-compatible-python
-        uses: MDAnalysis/mdanalysis-compatible-python@main
-        with:
-          release: "latest"
-
   main-tests:
-    if: "github.repository == 'lunamorrow/mda_openbabel_converter'"
-    needs: environment-config
+    if: "github.repository == 'MDAnalysis/mda-openbabel-converter'"
     runs-on: ${{ matrix.os }}
     strategy:
         fail-fast: false
         matrix:
           os: [macOS-latest, ubuntu-latest, windows-latest]
-          python-version: ${{ fromJSON(needs.environment-config.outputs.python-matrix) }}
+          python-version: ["3.10", "3.11", "3.12"]
           mdanalysis-version: ["latest", "develop"]
 
     steps:
@@ -61,12 +45,11 @@ jobs:
 
     # More info on options: https://github.com/conda-incubator/setup-miniconda
     - name: Install conda dependencies
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3
       with:
         python-version: ${{ matrix.python-version }}
         environment-file: devtools/conda-envs/test_env.yaml
         add-pip-as-python-dependency: true
-        architecture: x64
 
         miniforge-variant: Mambaforge
         use-mamba: true
@@ -103,29 +86,29 @@ jobs:
 
     - name: Run tests
       run: |
-        pytest -n 2 -v --cov=mda_openbabel_converter --cov-report=xml --color=yes mda_openbabel_converter/tests/
+        pytest -n auto -v --cov=mda_openbabel_converter --cov-report=xml --color=yes mda_openbabel_converter/tests/
 
     - name: codecov
       if: github.repository == 'lunamorrow/mda_openbabel_converter' && github.event_name != 'schedule'
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v4
       with:
+        token: ${{ secrets.CODECOV_TOKEN }}
         file: coverage.xml
         name: codecov-${{ matrix.os }}-py${{ matrix.python-version }}
         verbose: True
 
 
   pylint_check:
-    if: "github.repository == 'lunamorrow/mda_openbabel_converter'"
-    needs: environment-config
+    if: "github.repository == 'MDAnalysis/mda-openbabel-converter'"
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
 
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
-        python-version: ${{ needs.environment-config.outputs.stable-python-version }}
+        python-version: "3.11"
 
     - name: Install Pylint
       run: |
@@ -141,17 +124,16 @@ jobs:
 
 
   pypi_check:
-    if: "github.repository == 'lunamorrow/mda_openbabel_converter'"
-    needs: environment-config
+    if: "github.repository == 'MDAnalysis/mda-openbabel-converter'"
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
 
-    - name: Set up Python ${{ needs.environment-config.outputs.stable-python-version }}
-      uses: actions/setup-python@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
       with:
-        python-version: ${{ needs.environment-config.outputs.stable-python-version }}
+        python-version: "3.11"
 
     - name: Install dependencies
       run: |
