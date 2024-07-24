@@ -10,6 +10,9 @@ dependencies:
   # MDAnalysis
   - MDAnalysis
 
+  # OpenBabel
+  - openbabel
+
   # Testing
   - pytest
   - pytest-cov
