@@ -109,7 +109,7 @@ class TestOpenBabelParserSMILES(OpenBabelParserBase):
     def test_chiralities(self, top, filename):
         expected = np.array([
             "+" if atom.IsPositiveStereo() else "-" if atom.IsNegativeStereo()
-            else "N" for atom in ob.OBMolAtomIter(filename)])
+            else "" for atom in ob.OBMolAtomIter(filename)])
         assert_equal(expected, top.chiralities.values)
 
     def test_charges(self, top, filename):

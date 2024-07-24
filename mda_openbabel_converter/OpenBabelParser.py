@@ -46,8 +46,9 @@ except ImportError:
 
 
 class StereoEnum(StrEnum):
-    positive = "+"
-    negative = "-"
+    POSITIVE = "+"
+    NEGATIVE = "-"
+    NONE = ""
 
 
 class OpenBabelParser(TopologyReaderBase):
@@ -103,6 +104,10 @@ class OpenBabelParser(TopologyReaderBase):
                             residue_segindex=None)
 
         for atom in ob.OBMolAtomIter(mol):
+            # Atom name set with element and id, as name not supported by OpenBabel
+            name = "%s%d" % (OBElementTable().GetSymbol(atom.GetAtomicNum()),
+                             atom.GetIdx())
+            names.append(name)
             atomtypes.append(atom.GetType())
             ids.append(atom.GetIdx())
             masses.append(atom.GetExactMass())
@@ -124,11 +129,11 @@ class OpenBabelParser(TopologyReaderBase):
                 chainids.append(resid.GetChain())
                 icodes.append(resid.GetInsertionCode())
 
-            chirality = None
+            chirality = StereoEnum.NONE
             if atom.IsPositiveStereo():
-                chirality = StereoEnum.positive
-            if atom.IsNegativeStereo():
-                chirality = StereoEnum.negative
+                chirality = StereoEnum.POSITIVE
+            elif atom.IsNegativeStereo():
+                chirality = StereoEnum.NEGATIVE
             chiralities.append(chirality)
 
             aromatics.append(atom.IsAromatic())
@@ -137,7 +142,7 @@ class OpenBabelParser(TopologyReaderBase):
         attrs = []
         n_atoms = len(ids)
 
-        if resnums and resnums.__contains__(None):
+        if resnums and (len(resnums) != len(ids)):
             raise ValueError(
                 "ResidueInfo is only partially available in the molecule."
             )
@@ -156,22 +161,14 @@ class OpenBabelParser(TopologyReaderBase):
 
         # Bonds
         bonds = []
-        bond_types = []
         bond_orders = []
         for bond_idx in range(0, mol.NumBonds()):
             bond = mol.GetBond(bond_idx)
             bonds.append((bond.GetBeginAtomIdx(), bond.GetEndAtomIdx()))
             bond_orders.append(float(bond.GetBondOrder()))
-            bond_types.append(float(bond.GetBondOrder()))
-        attrs.append(Bonds(bonds, types=bond_types, order=bond_orders))
+        attrs.append(Bonds(bonds, order=bond_orders))
 
         # * Optional attributes *
-
-        # Atom name set with element and id, as name not supported by OpenBabel
-        for atom in ob.OBMolAtomIter(mol):
-            name = "%s%d" % (OBElementTable().GetSymbol(atom.GetAtomicNum()),
-                             atom.GetIdx())
-            names.append(name)
         attrs.append(Atomnames(np.array(names, dtype=object)))
 
         # Atom type
@@ -188,7 +185,7 @@ class OpenBabelParser(TopologyReaderBase):
             pass  # no guesser yet
 
         # Residue
-        if any(resnums) and not any(val is None for val in resnums):
+        if resnums:
             resnums = np.array(resnums, dtype=np.int32)
             resnames = np.array(resnames, dtype=object)
             segids = np.array(segids, dtype=object)

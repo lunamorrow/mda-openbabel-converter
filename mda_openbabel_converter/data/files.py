@@ -14,4 +14,3 @@ __all__ = [
 
 from importlib.resources import files
 MDANALYSIS_LOGO = files("mda_openbabel_converter") / "data" / "mda.txt"
-
