@@ -40,8 +40,9 @@ try:
     from openbabel import OBElementTable
     HAS_OBABEL = True
 except ImportError:
+    # import breaks with version 3.x
     warnings.warn("Cannot find openbabel, install with `mamba install -c "
-                  "conda-forge openbabel`")
+                  "conda-forge openbabel==2.4.0`")
 
 
 class StereoEnum(StrEnum):
@@ -168,7 +169,7 @@ class OpenBabelParser(TopologyReaderBase):
 
         # Atom name set with element and id, as name not supported by OpenBabel
         for atom in ob.OBMolAtomIter(mol):
-            name = "%s%d" % (OBElementTable().GetSymbol(atom.GetAtomicNum()), 
+            name = "%s%d" % (OBElementTable().GetSymbol(atom.GetAtomicNum()),
                              atom.GetIdx())
             names.append(name)
         attrs.append(Atomnames(np.array(names, dtype=object)))

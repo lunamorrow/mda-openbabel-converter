@@ -17,7 +17,7 @@ from MDAnalysis.core.topology import Topology
 
 import mda_openbabel_converter.OpenBabelParser  # version 2.7.0
 
-# *** can run with "python -m pytest" but not "pytest" (can't find 
+# *** can run with "python -m pytest" but not "pytest" (can't find
 # MDAnalysis) - need to fix this! ***
 
 
@@ -27,7 +27,7 @@ class OpenBabelParserBase(ParserBase):
     expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
                       'resids', 'resnums', 'chiralities',
                       'segids', 'bonds',
-                    ]
+                      ]
 
     expected_n_atoms = 0
     expected_n_residues = 0
@@ -53,7 +53,7 @@ class TestOpenBabelParserEmpty(OpenBabelParserBase):
 
     def test_mandatory_attributes(self, top):
         for attr in self.mandatory_attrs:
-            assert (hasattr(top, attr), 
+            assert (hasattr(top, attr),
                     'Missing required attribute: {}'.format(attr))
 
     def test_attrs_total_counts(self, top):
@@ -102,7 +102,7 @@ class TestOpenBabelParserSMILES(OpenBabelParserBase):
 
     def test_elements(self, top, filename):
         expected = np.array([
-            OBElementTable().GetSymbol(atom.GetAtomicNum()) for atom in 
+            OBElementTable().GetSymbol(atom.GetAtomicNum()) for atom in
             ob.OBMolAtomIter(filename)])
         assert_equal(expected, top.elements.values)
 
