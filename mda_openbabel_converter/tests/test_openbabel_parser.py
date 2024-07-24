@@ -1,7 +1,7 @@
 # Testing OpenBabel and Pybel
 
 import MDAnalysis as mda
-import openbabel as ob
+from openbabel import openbabel as ob
 from openbabel import OBMol, OBConversion, OBElementTable
 from pybel import readfile
 # from openbabel.test.files import files

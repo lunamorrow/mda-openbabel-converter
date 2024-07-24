@@ -35,7 +35,7 @@ HAS_OBABEL = False
 NEUTRON_MASS = 1.008
 
 try:
-    import openbabel as ob
+    from openbabel import openbabel as ob
     from openbabel import OBMol
     from openbabel import OBElementTable
     HAS_OBABEL = True

@@ -8,7 +8,7 @@ from MDAnalysis.coordinates.memory import MemoryReader
 from MDAnalysis.core.groups import AtomGroup
 
 try:
-    import openbabel as OB
+    from openbabel import openbabel as OB
     from openbabel import OBMol
 except ImportError:
     print("Cannot find openbabel, install with 'pip install openbabel==2.4.0'")
