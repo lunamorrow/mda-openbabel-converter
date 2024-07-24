@@ -65,10 +65,6 @@ jobs:
         installer:  mamba 
         shell: bash  -l {0} 
 
-    - name: Install openbabel
-      run: |
-        mamba install -c conda-forge 'openbabel<3.0.0'
-
     - name: Setup Conda Environment
       uses: mamba-org/setup-micromamba@v1
       with:
