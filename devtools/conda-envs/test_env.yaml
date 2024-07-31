@@ -12,7 +12,7 @@ dependencies:
   - MDAnalysisTests
 
   # OpenBabel
-  - openbabelS
+  - openbabel
 
   # Testing
   - pytest
