@@ -9,9 +9,10 @@ dependencies:
 
   # MDAnalysis
   - MDAnalysis
+  - MDAnalysisTests
 
   # OpenBabel
-  - openbabel
+  - openbabelS
 
   # Testing
   - pytest
