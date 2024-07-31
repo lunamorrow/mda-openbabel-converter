@@ -1,13 +1,12 @@
 # Testing OpenBabel and Pybel
 
 import MDAnalysis as mda
+import openbabel
 from openbabel import openbabel as ob
-from openbabel import OBMol, OBConversion, OBElementTable
-from pybel import readfile
+from openbabel.openbabel import OBMol, OBConversion, GetSymbol
 # from openbabel.test.files import files
 
 import mda_openbabel_converter
-from mda_openbabel_converter import OpenBabelParser as OBParser
 import pytest  # version 8.2.2
 import sys
 import numpy as np
@@ -25,8 +24,7 @@ class OpenBabelParserBase(ParserBase):
     parser = mda_openbabel_converter.OpenBabelParser.OpenBabelParser
 
     expected_attrs = ['ids', 'names', 'elements', 'masses', 'aromaticities',
-                      'resids', 'resnums', 'chiralities',
-                      'segids', 'bonds',
+                      'resids', 'resnums', 'segids', 'bonds',
                       ]
 
     expected_n_atoms = 0
@@ -102,15 +100,9 @@ class TestOpenBabelParserSMILES(OpenBabelParserBase):
 
     def test_elements(self, top, filename):
         expected = np.array([
-            OBElementTable().GetSymbol(atom.GetAtomicNum()) for atom in
+            GetSymbol(atom.GetAtomicNum()) for atom in
             ob.OBMolAtomIter(filename)])
         assert_equal(expected, top.elements.values)
-
-    def test_chiralities(self, top, filename):
-        expected = np.array([
-            "+" if atom.IsPositiveStereo() else "-" if atom.IsNegativeStereo()
-            else "" for atom in ob.OBMolAtomIter(filename)])
-        assert_equal(expected, top.chiralities.values)
 
     def test_charges(self, top, filename):
         expected = np.array([

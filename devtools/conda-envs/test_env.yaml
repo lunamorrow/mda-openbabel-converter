@@ -1,4 +1,4 @@
-name: mda_openbabel_converter-test
+name: mda_openbabel_converter
 channels:
   - conda-forge
   - defaults

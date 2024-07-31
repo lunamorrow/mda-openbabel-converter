@@ -30,19 +30,24 @@ from MDAnalysis.core.topologyattrs import (
 import warnings
 import numpy as np
 from enum import StrEnum
+# from enum import auto
+# from strenum import StrEnum
 
 HAS_OBABEL = False
 NEUTRON_MASS = 1.008
 
 try:
+    import openbabel
     from openbabel import openbabel as ob
-    from openbabel import OBMol
-    from openbabel import OBElementTable
+    from openbabel.openbabel import OBMol, OBResidue, GetSymbol
+    from openbabel.openbabel import *
+    #from openbabel.openbabel.OBElements import GetSymbol
+    #from openbabel import OBElement
     HAS_OBABEL = True
 except ImportError:
     # import breaks with version 3.x
     warnings.warn("Cannot find openbabel, install with `mamba install -c "
-                  "conda-forge openbabel==2.4.0`")
+                  "conda-forge openbabel`")
 
 
 class StereoEnum(StrEnum):
@@ -82,7 +87,6 @@ class OpenBabelParser(TopologyReaderBase):
 
         # Atoms
         names = []
-        chiralities = []
         resnums = []
         resnames = []
         elements = []
@@ -105,21 +109,21 @@ class OpenBabelParser(TopologyReaderBase):
 
         for atom in ob.OBMolAtomIter(mol):
             # Atom name set with element and id, as name not supported by OpenBabel
-            name = "%s%d" % (OBElementTable().GetSymbol(atom.GetAtomicNum()),
-                             atom.GetIdx())
+            id = atom.GetIdx()
+            name = "%s%d" % (GetSymbol(atom.GetAtomicNum()), id)
             names.append(name)
             atomtypes.append(atom.GetType())
-            ids.append(atom.GetIdx())
+            ids.append(id)
             masses.append(atom.GetExactMass())
             if abs(atom.GetExactMass()-atom.GetAtomicMass()) >= NEUTRON_MASS:
                 warnings.warn(
-                    f"Exact mass and atomic mass of atom ID: {atom.GetIdx()}"
-                    " are more than 1.008 AMU different. Be aware of isotopes,"
+                    f"Exact mass and atomic mass of atom ID: {id} are more" 
+                    " than 1.008 AMU different. Be aware of isotopes,"
                     " which are NOT flagged by MDAnalysis.")
             charges.append(atom.GetPartialCharge())
 
             # convert atomic number to element
-            elements.append(OBElementTable().GetSymbol(atom.GetAtomicNum()))
+            elements.append(GetSymbol(atom.GetAtomicNum()))
 
             # only for PBD and MOL2
             if atom.HasResidue():
@@ -128,13 +132,6 @@ class OpenBabelParser(TopologyReaderBase):
                 resnames.append(resid.GetName())
                 chainids.append(resid.GetChain())
                 icodes.append(resid.GetInsertionCode())
-
-            chirality = StereoEnum.NONE
-            if atom.IsPositiveStereo():
-                chirality = StereoEnum.POSITIVE
-            elif atom.IsNegativeStereo():
-                chirality = StereoEnum.NEGATIVE
-            chiralities.append(chirality)
 
             aromatics.append(atom.IsAromatic())
 
@@ -155,7 +152,6 @@ class OpenBabelParser(TopologyReaderBase):
             (elements, Elements, object),
             (masses, Masses, np.float32),
             (aromatics, Aromaticities, bool),
-            (chiralities, RSChirality, 'U1'),
         ):
             attrs.append(Attr(np.array(vals, dtype=dtype)))
 
@@ -188,11 +184,14 @@ class OpenBabelParser(TopologyReaderBase):
         if resnums:
             resnums = np.array(resnums, dtype=np.int32)
             resnames = np.array(resnames, dtype=object)
-            segids = np.array(segids, dtype=object)
+            #segids = np.array(segids, dtype=object)
             icodes = np.array(icodes, dtype=object)
-            residx, (resnums, resnames, icodes, segids) = change_squash(
-                (resnums, resnames, icodes, segids),
-                (resnums, resnames, icodes, segids))
+            # residx, (resnums, resnames, icodes, segids) = change_squash(
+            #     (resnums, resnames, icodes, segids),
+            #     (resnums, resnames, icodes, segids))
+            residx, (resnums, resnames, icodes) = change_squash(
+                (resnums, resnames, icodes),
+                (resnums, resnames, icodes))
             n_residues = len(resnums)
             for vals, Attr, dtype in (
                 (resnums, Resids, np.int32),
@@ -208,7 +207,7 @@ class OpenBabelParser(TopologyReaderBase):
             n_residues = 1
 
         # Segment
-        if any(segids) and not any(val is None for val in segids):
+        if len(segids) and not any(val is None for val in segids):
             segidx, (segids,) = change_squash((segids,), (segids,))
             n_segments = len(segids)
             attrs.append(Segids(segids))
