@@ -29,9 +29,6 @@ from MDAnalysis.core.topologyattrs import (
 )
 import warnings
 import numpy as np
-from enum import StrEnum
-# from enum import auto
-# from strenum import StrEnum
 
 HAS_OBABEL = False
 NEUTRON_MASS = 1.008
@@ -41,20 +38,10 @@ try:
     from openbabel import openbabel as ob
     from openbabel.openbabel import OBMol, OBResidue, GetSymbol
     from openbabel.openbabel import *
-    #from openbabel.openbabel.OBElements import GetSymbol
-    #from openbabel import OBElement
     HAS_OBABEL = True
 except ImportError:
-    # import breaks with version 3.x
     warnings.warn("Cannot find openbabel, install with `mamba install -c "
                   "conda-forge openbabel`")
-
-
-class StereoEnum(StrEnum):
-    POSITIVE = "+"
-    NEGATIVE = "-"
-    NONE = ""
-
 
 class OpenBabelParser(TopologyReaderBase):
     """
