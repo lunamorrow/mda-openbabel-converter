@@ -1,0 +1,132 @@
+HEADER    PLANT SEED PROTEIN                      30-APR-81   1CRN      1CRND  1
+COMPND    CRAMBIN                                                       1CRN   4
+SOURCE    ABYSSINIAN CABBAGE (CRAMBE ABYSSINICA) SEED                   1CRN   5
+AUTHOR    W.A.HENDRICKSON,M.M.TEETER                                    1CRN   6
+REVDAT   5   16-APR-87 1CRND   1       HEADER                           1CRND  2
+REVDAT   4   04-MAR-85 1CRNC   1       REMARK                           1CRNC  1
+REVDAT   3   30-SEP-83 1CRNB   1       REVDAT                           1CRNB  1
+REVDAT   2   03-DEC-81 1CRNA   1       SHEET                            1CRNB  2
+REVDAT   1   28-JUL-81 1CRN    0                                        1CRNB  3
+REMARK   1                                                              1CRN   7
+REMARK   1 REFERENCE 1                                                  1CRNC  2
+REMARK   1  AUTH   M.M.TEETER                                           1CRNC  3
+REMARK   1  TITL   WATER STRUCTURE OF A HYDROPHOBIC PROTEIN AT ATOMIC   1CRNC  4
+REMARK   1  TITL 2 RESOLUTION. PENTAGON RINGS OF WATER MOLECULES IN     1CRNC  5
+REMARK   1  TITL 3 CRYSTALS OF CRAMBIN                                  1CRNC  6
+REMARK   1  REF    PROC.NAT.ACAD.SCI.USA         V.  81  6014 1984      1CRNC  7
+REMARK   1  REFN   ASTM PNASA6  US ISSN 0027-8424                  040  1CRNC  8
+REMARK   1 REFERENCE 2                                                  1CRNC  9
+REMARK   1  AUTH   W.A.HENDRICKSON,M.M.TEETER                           1CRN   9
+REMARK   1  TITL   STRUCTURE OF THE HYDROPHOBIC PROTEIN CRAMBIN         1CRN  10
+REMARK   1  TITL 2 DETERMINED DIRECTLY FROM THE ANOMALOUS SCATTERING    1CRN  11
+REMARK   1  TITL 3 OF SULPHUR                                           1CRN  12
+REMARK   1  REF    NATURE                        V.  290  107 1981      1CRN  13
+REMARK   1  REFN   ASTM NATUAS  UK ISSN 0028-0836                  006  1CRN  14
+REMARK   1 REFERENCE 3                                                  1CRNC 10
+REMARK   1  AUTH   M.M.TEETER,W.A.HENDRICKSON                           1CRN  16
+REMARK   1  TITL   HIGHLY ORDERED CRYSTALS OF THE PLANT SEED PROTEIN    1CRN  17
+REMARK   1  TITL 2 CRAMBIN                                              1CRN  18
+REMARK   1  REF    J.MOL.BIOL.                   V.  127  219 1979      1CRN  19
+REMARK   1  REFN   ASTM JMOBAK  UK ISSN 0022-2836                  070  1CRN  20
+REMARK   2                                                              1CRN  21
+REMARK   2 RESOLUTION. 1.5 ANGSTROMS.                                   1CRN  22
+REMARK   3                                                              1CRN  23
+REMARK   3 REFINEMENT. RESTRAINED LEAST SQUARES (HENDRICKSON,W.A.,      1CRN  24
+REMARK   3  KONNERT,J.H. COMPUTING IN CRYSTALLOGRAPHY, EDS.DIAMOND,R.,  1CRN  25
+REMARK   3  RAMASESHAN,S.,VENKATESAN,K. (1980)).                        1CRN  26
+REMARK   4                                                              1CRN  27
+REMARK   4 CONFORMATIONAL HETEROGENEITY EXISTS AT ILE 7 AND ILE 25      1CRN  28
+REMARK   4 WHERE CD1 ATOMS TAKE EITHER OF TWO STAGGERED POSSIBILITIES.  1CRN  29
+REMARK   4 COMPOSITIONAL HETEROGENEITY ALSO EXISTS AT POSITIONS 22 AND  1CRN  30
+REMARK   4 25.  REFINEMENT PARAMETERS SUGGEST THAT RESIDUE 22 IS ABOUT  1CRN  31
+REMARK   4 60/40 PRO/SER AND THAT RESIDUE 25 IS ABOUT 60/40 ILE/LEU.    1CRN  32
+REMARK   4 THE HETEROGENEITY AT RESIDUE 22 APPARENTLY CAUSES A          1CRN  33
+REMARK   4 DISORDER IN TYR 29 - THE REFINED POSITION OF ITS OH ATOM     1CRN  34
+REMARK   4 MAKES AN IMPOSSIBLY SHORT CONTACT OF 2.6 ANGSTROMS WITH      1CRN  35
+REMARK   4 ATOM CD OF PRO 22 ON A SCREW-RELATED MOLECULE.  THE          1CRN  36
+REMARK   4 DEPOSITED COORDINATES ARE ONLY FOR THE MAJOR CONTRIBUTOR AT  1CRN  37
+REMARK   4 EACH SITE (PRO 22 AND ILE 25).  DEPOSITION OF THE MODEL OF   1CRN  38
+REMARK   4 DISORDER AND SOLVENT STRUCTURE IS DEFERRED UNTIL HIGHER      1CRN  39
+REMARK   4 RESOLUTION REFINEMENT.  THE R-FACTOR FOR THE COMPLETE MODEL  1CRN  40
+REMARK   4 INCLUDING HETEROGENEITY AND SOLVENT IS 0.114 ISOTROPIC AND   1CRN  41
+REMARK   4 0.104 ANISOTROPIC AGAINST ALL DATA IN THE 10.0 TO 1.5        1CRN  42
+REMARK   4 ANGSTROM SHELL.                                              1CRN  43
+REMARK   5                                                              1CRN  44
+REMARK   5 THE SECONDARY STRUCTURE SPECIFICATIONS ARE THOSE DEFINED     1CRN  45
+REMARK   5 IN REFERENCE 1 ABOVE AND DEPEND ON PARTICULAR DEFINITIONS    1CRN  46
+REMARK   5 THAT MAY AFFECT THE DETERMINATION OF END POINTS.  PLEASE     1CRN  47
+REMARK   5 CONSULT THE PRIMARY REFERENCE AND EXAMINE STRUCTURAL         1CRN  48
+REMARK   5 DETAILS SUCH AS HYDROGEN BONDING AND CONFORMATION ANGLES     1CRN  49
+REMARK   5 WHEN MAKING USE OF THE SPECIFICATIONS.                       1CRN  50
+REMARK   6                                                              1CRNA  1
+REMARK   6 CORRECTION. CORRECT RESIDUE NUMBER ON STRAND 1 OF SHEET S1.  1CRNA  2
+REMARK   6  03-DEC-81.                                                  1CRNA  3
+REMARK   7                                                              1CRNB  4
+REMARK   7 CORRECTION. INSERT REVDAT RECORDS. 30-SEP-83.                1CRNB  5
+REMARK   8                                                              1CRNC 11
+REMARK   8 CORRECTION. INSERT NEW PUBLICATION AS REFERENCE 1 AND        1CRNC 12
+REMARK   8  RENUMBER THE OTHERS.  04-MAR-85.                            1CRNC 13
+REMARK   9                                                              1CRND  3
+REMARK   9 CORRECTION. CHANGE DEPOSITION DATE FROM 31-APR-81 TO         1CRND  4
+REMARK   9  30-APR-81.  16-APR-87.                                      1CRND  5
+SEQRES   1     46  THR THR CYS CYS PRO SER ILE VAL ALA ARG SER ASN PHE  1CRN  51
+SEQRES   2     46  ASN VAL CYS ARG LEU PRO GLY THR PRO GLU ALA ILE CYS  1CRN  52
+SEQRES   3     46  ALA THR TYR THR GLY CYS ILE ILE ILE PRO GLY ALA THR  1CRN  53
+SEQRES   4     46  CYS PRO GLY ASP TYR ALA ASN                          1CRN  54
+HELIX    1  H1 ILE      7  PRO     19  1 3/10 CONFORMATION RES 17,19    1CRN  55
+HELIX    2  H2 GLU     23  THR     30  1 DISTORTED 3/10 AT RES 30       1CRN  56
+SHEET    1  S1 2 THR     1  CYS     4  0                                1CRNA  4
+SHEET    2  S1 2 CYS    32  ILE    35 -1                                1CRN  58
+TURN     1  T1 PRO    41  TYR    44                                     1CRN  59
+SSBOND   1 CYS      3    CYS     40                                     1CRN  60
+SSBOND   2 CYS      4    CYS     32                                     1CRN  61
+SSBOND   3 CYS     16    CYS     26                                     1CRN  62
+CRYST1   40.960   18.650   22.520  90.00  90.77  90.00 P 21          2  1CRN  63
+ORIGX1      1.000000  0.000000  0.000000        0.00000                 1CRN  64
+ORIGX2      0.000000  1.000000  0.000000        0.00000                 1CRN  65
+ORIGX3      0.000000  0.000000  1.000000        0.00000                 1CRN  66
+SCALE1       .024414  0.000000  -.000328        0.00000                 1CRN  67
+SCALE2      0.000000   .053619  0.000000        0.00000                 1CRN  68
+SCALE3      0.000000  0.000000   .044409        0.00000                 1CRN  69
+ATOM      1  N   THR     1      17.047  14.099   3.625  1.00 13.79      1CRN  70
+ATOM      2  CA  THR     1      16.967  12.784   4.338  1.00 10.80      1CRN  71
+ATOM      3  C   THR     1      15.685  12.755   5.133  1.00  9.19      1CRN  72
+ATOM      4  O   THR     1      15.268  13.825   5.594  1.00  9.85      1CRN  73
+ATOM      5  CB  THR     1      18.170  12.703   5.337  1.00 13.02      1CRN  74
+ATOM      6  OG1 THR     1      19.334  12.829   4.463  1.00 15.06      1CRN  75
+ATOM      7  CG2 THR     1      18.150  11.546   6.304  1.00 14.23      1CRN  76
+ATOM      8  N   THR     2      15.115  11.555   5.265  1.00  7.81      1CRN  77
+ATOM      9  CA  THR     2      13.856  11.469   6.066  1.00  8.31      1CRN  78
+ATOM     10  C   THR     2      14.164  10.785   7.379  1.00  5.80      1CRN  79
+ATOM     11  O   THR     2      14.993   9.862   7.443  1.00  6.94      1CRN  80
+ATOM     12  CB  THR     2      12.732  10.711   5.261  1.00 10.32      1CRN  81
+ATOM     13  OG1 THR     2      13.308   9.439   4.926  1.00 12.81      1CRN  82
+ATOM     14  CG2 THR     2      12.484  11.442   3.895  1.00 11.90      1CRN  83
+ATOM     15  N   CYS     3      13.488  11.241   8.417  1.00  5.24      1CRN  84
+ATOM     16  CA  CYS     3      13.660  10.707   9.787  1.00  5.39      1CRN  85
+ATOM     17  C   CYS     3      12.269  10.431  10.323  1.00  4.45      1CRN  86
+ATOM     18  O   CYS     3      11.393  11.308  10.185  1.00  6.54      1CRN  87
+ATOM     19  CB  CYS     3      14.368  11.748  10.691  1.00  5.99      1CRN  88
+ATOM     20  SG  CYS     3      15.885  12.426  10.016  1.00  7.01      1CRN  89
+ATOM     21  N   CYS     4      12.019   9.272  10.928  1.00  3.90      1CRN  90
+ATOM     22  CA  CYS     4      10.646   8.991  11.408  1.00  4.24      1CRN  91
+ATOM     23  C   CYS     4      10.654   8.793  12.919  1.00  3.72      1CRN  92
+ATOM     24  O   CYS     4      11.659   8.296  13.491  1.00  5.30      1CRN  93
+ATOM     25  CB  CYS     4      10.057   7.752  10.682  1.00  4.41      1CRN  94
+ATOM     26  SG  CYS     4       9.837   8.018   8.904  1.00  4.72      1CRN  95
+ATOM     27  N   PRO     5       9.561   9.108  13.563  1.00  3.96      1CRN  96
+ATOM     28  CA  PRO     5       9.448   9.034  15.012  1.00  4.25      1CRN  97
+ATOM     29  C   PRO     5       9.288   7.670  15.606  1.00  4.96      1CRN  98
+ATOM     30  O   PRO     5       9.490   7.519  16.819  1.00  7.44      1CRN  99
+ATOM     31  CB  PRO     5       8.230   9.957  15.345  1.00  5.11      1CRN 100
+ATOM     32  CG  PRO     5       7.338   9.786  14.114  1.00  5.24      1CRN 101
+ATOM     33  CD  PRO     5       8.366   9.804  12.958  1.00  5.20      1CRN 102
+TER      34      PRO     5                                              1CRN 103
+CONECT   20   19  282                                                   1CRN 104
+CONECT   26   25  229                                                   1CRN 105
+CONECT  116  115  188                                                   1CRN 106
+CONECT  188  116  187                                                   1CRN 107
+CONECT  229   26  228                                                   1CRN 108
+CONECT  282   20  281                                                   1CRN 109
+MASTER       62    0    0    2    2    1    0    6  327    1    6    4  1CRND  6
+END                                                                     1CRN 111
