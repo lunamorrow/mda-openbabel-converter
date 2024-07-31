@@ -43,6 +43,7 @@ except ImportError:
     warnings.warn("Cannot find openbabel, install with `mamba install -c "
                   "conda-forge openbabel`")
 
+
 class OpenBabelParser(TopologyReaderBase):
     """
     Inherits from TopologyReaderBase and converts an OpenBabel OBMol to a
@@ -95,16 +96,16 @@ class OpenBabelParser(TopologyReaderBase):
                             residue_segindex=None)
 
         for atom in ob.OBMolAtomIter(mol):
-            # Atom name set with element and id, as name not supported by OpenBabel
-            id = atom.GetIdx()
-            name = "%s%d" % (GetSymbol(atom.GetAtomicNum()), id)
+            # Name set with element and id, as name not stored by OpenBabel
+            a_id = atom.GetIdx()
+            name = "%s%d" % (GetSymbol(atom.GetAtomicNum()), a_id)
             names.append(name)
             atomtypes.append(atom.GetType())
-            ids.append(id)
+            ids.append(a_id)
             masses.append(atom.GetExactMass())
             if abs(atom.GetExactMass()-atom.GetAtomicMass()) >= NEUTRON_MASS:
                 warnings.warn(
-                    f"Exact mass and atomic mass of atom ID: {id} are more" 
+                    f"Exact mass and atomic mass of atom ID: {a_id} are more"
                     " than 1.008 AMU different. Be aware of isotopes,"
                     " which are NOT flagged by MDAnalysis.")
             charges.append(atom.GetPartialCharge())
@@ -171,11 +172,7 @@ class OpenBabelParser(TopologyReaderBase):
         if resnums:
             resnums = np.array(resnums, dtype=np.int32)
             resnames = np.array(resnames, dtype=object)
-            #segids = np.array(segids, dtype=object)
             icodes = np.array(icodes, dtype=object)
-            # residx, (resnums, resnames, icodes, segids) = change_squash(
-            #     (resnums, resnames, icodes, segids),
-            #     (resnums, resnames, icodes, segids))
             residx, (resnums, resnames, icodes) = change_squash(
                 (resnums, resnames, icodes),
                 (resnums, resnames, icodes))
