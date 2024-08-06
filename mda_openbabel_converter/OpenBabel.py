@@ -48,11 +48,11 @@ class OpenBabelReader(MemoryReader):
         """
         n_atoms = filename.NumAtoms()
         coordinates = np.array([
-            [atom.GetVector().GetX(),
-            atom.GetVector().GetY(),
-            atom.GetVector().GetZ()] for atom in OBMolAtomIter(filename)],
+            [(coords := atom.GetVector()).GetX(),
+            coords.GetY(),
+            coords.GetZ()] for atom in OBMolAtomIter(filename)],
             dtype=np.float32)
-        if coordinates.size == 0:
+        if not np.any(coordinates):
             warnings.warn("No coordinates found in the OBMol")
             coordinates = np.empty((1, n_atoms, 3), dtype=np.float32)
             coordinates[:] = np.nan
